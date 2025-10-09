@@ -87,7 +87,7 @@ jobs:
       with:
         name: gradle-sidecar-buildpack-${{ steps.version.outputs.version }}
         path: |
-          gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
+          combined-buildpack/gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
         retention-days: 90
 
     - name: Upload application JAR
