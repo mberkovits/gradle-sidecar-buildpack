@@ -29,4 +29,12 @@ exec java -jar "$(dirname "$0")"/*.jar "$@"
 EOF
 chmod +x "$LAYER_DIR/start.sh"
 
+# Set the launch command in the layer
+echo "---> Making java app available at launch time"
+cat > "${CNB_LAYERS_DIR}/java-app.toml" << EOF
+[types]
+cache = true
+launch = true
+EOF
+
 echo "---> JAR file prepared successfully"
