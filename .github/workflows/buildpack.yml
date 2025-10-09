@@ -115,8 +115,8 @@ jobs:
         ### Installation
 
         \`\`\`bash
-        # Download the buildpack
-        curl -L -o gradle-sidecar-buildpack.cnb https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
+        # Download the buildpack using GitHub CLI
+        gh release download ${{ github.ref_name }} --pattern "gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb" --output gradle-sidecar-buildpack.cnb
 
         # Use with your application
         pack build your-app --buildpack gradle-sidecar-buildpack.cnb
