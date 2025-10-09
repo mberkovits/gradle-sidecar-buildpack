@@ -70,6 +70,7 @@ jobs:
         # Create a combined buildpack that includes the built JAR
         mkdir -p combined-buildpack
         cp -r buildpack/* combined-buildpack/
+        mkdir -p combined-buildpack/source
         cp build/libs/*.jar combined-buildpack/source/
 
         # Package the combined buildpack with Pack CLI
