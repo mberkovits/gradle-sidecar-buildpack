@@ -77,6 +77,8 @@ jobs:
         chmod +x combined-buildpack/bin/detect
         chmod +x combined-buildpack/bin/build
 
+        tree combined-buildpack
+
         # Package the combined buildpack with Pack CLI
         pack buildpack package gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb \
           --path ./combined-buildpack \
