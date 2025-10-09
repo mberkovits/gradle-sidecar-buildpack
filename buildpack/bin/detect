@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+# Detects if there is a JAR file in the source folder
+if [ ! -f "${CNB_BUILDPACK_DIR}/source"/*.jar ]; then
+    echo "No JAR file found in source"
+    exit 100
+fi
+
+cat > "${CNB_BUILD_PLAN_PATH}" << EOL
+provides = ["java-app"]
+requires = ["jdk"]
+EOL

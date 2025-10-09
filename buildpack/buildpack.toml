@@ -1,7 +1,7 @@
 api = "0.7"
 
 [buildpack]
-id = "com.example.gradle-sidecar"
+id = "gradle-sidecar"
 version = "0.0.1"
 name = "Gradle Sidecar Buildpack"
 description = "Builds a Gradle app as a sidecar process for Heroku"

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+echo "---> Java Sidecar Buildpack"
+
+# Create layer directory for the Java app
+LAYER_DIR="${CNB_LAYERS_DIR}/java-app"
+mkdir -p "${LAYER_DIR}"
+
+# Copy JAR file from source to the layer directory
+echo "---> Copying JAR file to layer"
+cp "${CNB_BUILDPACK_DIR}/source"/*.jar "$LAYER_DIR/" 2>/dev/null || true
+
+# Set the JAR file as executable
+chmod +x "$LAYER_DIR"/*.jar
+
+# Create a startup script
+echo "---> Creating startup script"
+cat > "$LAYER_DIR/start.sh" << 'EOF'
+#!/bin/bash
+exec java -jar "$(dirname "$0")"/*.jar "$@"
+EOF
+chmod +x "$LAYER_DIR/start.sh"
+
+echo "---> JAR file prepared successfully"
