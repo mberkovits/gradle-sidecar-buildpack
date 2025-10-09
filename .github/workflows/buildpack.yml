@@ -60,10 +60,10 @@ jobs:
           echo "version=0.0.1-${TIMESTAMP}" >> $GITHUB_OUTPUT
         fi
 
-    # - name: Update buildpack.toml version
-    #   run: |
-    #     VERSION="${{ steps.version.outputs.version }}"
-    #     sed -i "s/version = \".*\"/version = \"$VERSION\"/" buildpack/buildpack.toml
+    - name: Update buildpack.toml version
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        sed -i "s/version = \".*\"/version = \"$VERSION\"/" buildpack/buildpack.toml
 
     - name: Create buildpack with application
       run: |
@@ -73,21 +73,21 @@ jobs:
         mkdir -p combined-buildpack/source
         cp build/libs/*.jar combined-buildpack/source/
 
+        # Ensure buildpack bin files are executable
+        chmod +x combined-buildpack/bin/detect
+        chmod +x combined-buildpack/bin/build
 
-        ls ./combined-buildpack
         # Package the combined buildpack with Pack CLI
-        # pack buildpack package gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb \
-        #   --path ./combined-buildpack \
-        #   --format file
-        cd combined-buildpack
-        pack buildpack package gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb --format file
+        pack buildpack package gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb \
+          --path ./combined-buildpack \
+          --format file
 
     - name: Upload buildpack artifact
       uses: actions/upload-artifact@v4
       with:
         name: gradle-sidecar-buildpack-${{ steps.version.outputs.version }}
         path: |
-          combined-buildpack/gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
+          gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
         retention-days: 90
 
     - name: Upload application JAR
