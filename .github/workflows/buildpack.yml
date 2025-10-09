@@ -60,10 +60,10 @@ jobs:
           echo "version=0.0.1-${TIMESTAMP}" >> $GITHUB_OUTPUT
         fi
 
-    - name: Update buildpack.toml version
-      run: |
-        VERSION="${{ steps.version.outputs.version }}"
-        sed -i "s/version = \".*\"/version = \"$VERSION\"/" buildpack/buildpack.toml
+    # - name: Update buildpack.toml version
+    #   run: |
+    #     VERSION="${{ steps.version.outputs.version }}"
+    #     sed -i "s/version = \".*\"/version = \"$VERSION\"/" buildpack/buildpack.toml
 
     - name: Create buildpack with application
       run: |
