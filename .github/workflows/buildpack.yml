@@ -98,55 +98,30 @@ jobs:
         retention-days: 90
 
     - name: Create GitHub Release
-      id: create_release
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
+      run: |
+        gh release create ${{ github.ref_name }} \
+          --title "Gradle Sidecar Buildpack ${{ steps.version.outputs.version }}" \
+          --notes "## Gradle Sidecar Buildpack ${{ steps.version.outputs.version }}
+
+        This release includes:
+        - **Buildpack**: \`gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb\`
+        - **Application JAR**: \`http-server-app-${{ steps.version.outputs.version }}.jar\`
+
+        ### Usage
+
+        Download the \`.cnb\` file and use it as a custom buildpack with your Java application.
+
+        ### Installation
+
+        \`\`\`bash
+        # Download the buildpack
+        curl -L -o gradle-sidecar-buildpack.cnb https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
+
+        # Use with your application
+        pack build your-app --buildpack gradle-sidecar-buildpack.cnb
+        \`\`\`" \
+          gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb \
+          build/libs/*.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Gradle Sidecar Buildpack ${{ steps.version.outputs.version }}
-        body: |
-          ## Gradle Sidecar Buildpack ${{ steps.version.outputs.version }}
-
-          This release includes:
-          - **Buildpack**: `gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb`
-          - **Application JAR**: `http-server-app-${{ steps.version.outputs.version }}.jar`
-
-          ### Usage
-
-          Download the `.cnb` file and use it as a custom buildpack with your Java application.
-
-          ### Installation
-
-          ```bash
-          # Download the buildpack
-          curl -L -o gradle-sidecar-buildpack.cnb https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
-
-          # Use with your application
-          pack build your-app --buildpack gradle-sidecar-buildpack.cnb
-          ```
-        draft: false
-        prerelease: false
-
-    - name: Upload Buildpack to Release
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
-        asset_name: gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb
-        asset_content_type: application/octet-stream
-
-    - name: Upload JAR to Release
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: build/libs/*.jar
-        asset_name: http-server-app-${{ steps.version.outputs.version }}.jar
-        asset_content_type: application/java-archive
