@@ -12,5 +12,8 @@ cat > "${CNB_BUILD_PLAN_PATH}" << EOL
 name = "java-app"
 
 [[requires]]
+name = "jdk"
+
+[[requires]]
 name = "java-app"
 EOL
