@@ -3,6 +3,10 @@ set -eo pipefail
 
 echo "---> Java Sidecar Buildpack"
 
+plan=${CNB_BP_PLAN_PATH}
+
+echo "${CNB_LAYERS_DIR}"
+ls -la "${CNB_LAYERS_DIR}"
 # Create layer directory for the Java app
 LAYER_DIR="${CNB_LAYERS_DIR}/java-app"
 mkdir -p "${LAYER_DIR}"
@@ -13,6 +17,9 @@ cp "${CNB_BUILDPACK_DIR}/source"/*.jar "$LAYER_DIR/" 2>/dev/null || true
 
 # Set the JAR file as executable
 chmod +x "$LAYER_DIR"/*.jar
+
+echo "Layer Directory: ${LAYER_DIR}"
+ls -la "${LAYER_DIR}"
 
 # Create a startup script
 echo "---> Creating startup script"
