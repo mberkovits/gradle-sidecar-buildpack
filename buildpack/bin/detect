@@ -8,6 +8,9 @@ if [ ! -f "${CNB_BUILDPACK_DIR}/source"/*.jar ]; then
 fi
 
 cat > "${CNB_BUILD_PLAN_PATH}" << EOL
-provides = ["java-app"]
-requires = ["jdk"]
+[[provides]]
+name = "java-app"
+
+[[requires]]
+name = "jdk"
 EOL
