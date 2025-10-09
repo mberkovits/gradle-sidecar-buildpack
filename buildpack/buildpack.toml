@@ -1,13 +1,12 @@
-api = "0.7"
+api = "0.10"
+WithWidowsBuild = false
+WithLinuxBuild = true
 
 [buildpack]
 id = "gradle-sidecar"
 version = "0.0.1"
 name = "Gradle Sidecar Buildpack"
 description = "Builds a Gradle app as a sidecar process for Heroku"
-
-[[stacks]]
-id = "heroku-22"
 
 [[targets]]
 os = "linux"
