@@ -116,7 +116,7 @@ jobs:
 
         \`\`\`bash
         # Download the buildpack using GitHub CLI
-        gh release download ${{ github.ref_name }} -{{ github.repository }} --pattern "gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb" --output gradle-sidecar-buildpack.cnb
+        gh release download ${{ github.ref_name }} --repo {{ github.repository }} --pattern "gradle-sidecar-buildpack-${{ steps.version.outputs.version }}.cnb" --output gradle-sidecar-buildpack.cnb
 
         # Use with your application
         pack build your-app --buildpack gradle-sidecar-buildpack.cnb

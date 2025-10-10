@@ -123,3 +123,5 @@ temp/
 *.njsproj
 *.sln
 *.sw?
+
+buildpack/source/
