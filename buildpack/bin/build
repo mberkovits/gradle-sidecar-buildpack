@@ -21,13 +21,21 @@ chmod +x "$LAYER_DIR"/*.jar
 echo "Layer Directory: ${LAYER_DIR}"
 ls -la "${LAYER_DIR}"
 
-# Create a startup script
+# Create a startup script in bin directory (automatically added to PATH)
 echo "---> Creating startup script"
-cat > "$LAYER_DIR/start.sh" << 'EOF'
+mkdir -p "$LAYER_DIR/bin"
+cat > "$LAYER_DIR/bin/start.sh" << 'EOF'
 #!/bin/bash
-exec java -jar "$(dirname "$0")"/*.jar "$@"
+# Script to start the Java HTTP server
+# Usage: start.sh [--port PORT] or start.sh [-p PORT] or start.sh [PORT]
+# Examples:
+#   start.sh --port 3000
+#   start.sh -p 3000
+#   start.sh 3000  (backward compatible)
+# If no port is specified, defaults to 8080 or uses PORT environment variable
+exec java -jar "$(dirname "$0")/../"*.jar "$@"
 EOF
-chmod +x "$LAYER_DIR/start.sh"
+chmod +x "$LAYER_DIR/bin/start.sh"
 
 # Set the launch command in the layer
 echo "---> Making java app available at launch time"

@@ -11,10 +11,11 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
 public class HttpServerApp {
-    private static final int PORT = 8080;
+    private static final int DEFAULT_PORT = 8080;
 
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        int port = getPort(args);
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         
         // Create the messages endpoint
         server.createContext("/api/messages", new MessagesHandler());
@@ -22,9 +23,63 @@ public class HttpServerApp {
         server.setExecutor(null);
         server.start();
         
-        System.out.println("HTTP Server started on port " + PORT);
-        System.out.println("Send POST requests to http://localhost:" + PORT + "/api/messages");
+        System.out.println("HTTP Server started on port " + port);
+        System.out.println("Send POST requests to http://localhost:" + port + "/api/messages");
         System.out.println("Expected JSON format: {\"message\": \"your message here\"}");
+    }
+
+    private static int getPort(String[] args) {
+        // Priority: 1. Command-line argument (--port or -p), 2. PORT environment variable, 3. Default
+        
+        // Parse command-line arguments
+        for (int i = 0; i < args.length; i++) {
+            if (("--port".equals(args[i]) || "-p".equals(args[i])) && i + 1 < args.length) {
+                try {
+                    int port = Integer.parseInt(args[i + 1]);
+                    if (port < 1 || port > 65535) {
+                        System.err.println("Warning: Invalid port number " + port + ". Using default port " + DEFAULT_PORT);
+                        return DEFAULT_PORT;
+                    }
+                    return port;
+                } catch (NumberFormatException e) {
+                    System.err.println("Warning: Invalid port argument '" + args[i + 1] + "'. Using default port " + DEFAULT_PORT);
+                    return DEFAULT_PORT;
+                }
+            }
+        }
+        
+        // Backward compatibility: if single argument without flag, treat as port
+        if (args.length == 1 && !args[0].startsWith("-")) {
+            try {
+                int port = Integer.parseInt(args[0]);
+                if (port < 1 || port > 65535) {
+                    System.err.println("Warning: Invalid port number " + port + ". Using default port " + DEFAULT_PORT);
+                    return DEFAULT_PORT;
+                }
+                return port;
+            } catch (NumberFormatException e) {
+                System.err.println("Warning: Invalid port argument '" + args[0] + "'. Using default port " + DEFAULT_PORT);
+                return DEFAULT_PORT;
+            }
+        }
+        
+        // Check for PORT environment variable
+        String portEnv = System.getenv("PORT");
+        if (portEnv != null && !portEnv.isEmpty()) {
+            try {
+                int port = Integer.parseInt(portEnv);
+                if (port < 1 || port > 65535) {
+                    System.err.println("Warning: Invalid PORT environment variable " + port + ". Using default port " + DEFAULT_PORT);
+                    return DEFAULT_PORT;
+                }
+                return port;
+            } catch (NumberFormatException e) {
+                System.err.println("Warning: Invalid PORT environment variable '" + portEnv + "'. Using default port " + DEFAULT_PORT);
+                return DEFAULT_PORT;
+            }
+        }
+        
+        return DEFAULT_PORT;
     }
 
     static class MessagesHandler implements HttpHandler {
